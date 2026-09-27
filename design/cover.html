@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Обложка проекта</title>
+<!-- Исходник обложки docs/cover.png: открыть в Chrome и снять скриншот 1600×900 (или chrome --headless --screenshot --window-size=1600,900) -->
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Onest:wght@500;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../public/css/base.css">
+<style>
+  html, body { margin: 0; width: 1600px; height: 900px; overflow: hidden; }
+  body { background: var(--paper); position: relative; }
+
+  .copy { position: absolute; left: 96px; top: 84px; width: 660px; }
+  .brand { display: flex; align-items: center; gap: 16px; font-family: var(--display); font-weight: 800; font-size: 34px; }
+  .brand i { width: 44px; height: 44px; border-radius: 50%;
+    background: radial-gradient(circle, var(--paper) 0 8%, var(--sticker) 9% 36%, var(--ink) 37%); }
+  h1 { font-size: 64px; font-weight: 800; line-height: 1.04; margin-top: 64px; }
+  .sub { font-size: 26px; color: var(--ink-2); margin-top: 28px; line-height: 1.35; max-width: 18em; }
+  .stack { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 44px; }
+  .stack span { padding: 10px 20px; border: 2.5px solid var(--ink); border-radius: 999px; font-weight: 700; font-size: 22px; }
+  .stack span.b { background: var(--ink); color: var(--paper); }
+
+  /* Правая часть: проигрыватель + обложки + консоль */
+  .deck {
+    position: absolute; right: -120px; top: 150px; width: 700px; height: 620px;
+    background: var(--blue); border-radius: 36px;
+    box-shadow: inset 0 -12px 0 rgba(0,0,0,.25), 0 40px 80px -40px rgba(26,28,32,.8);
+  }
+  .platter { position: absolute; left: 48px; top: 48px; width: 520px; height: 520px; border-radius: 50%;
+    background: #2f3135; padding: 13px; box-shadow: 0 0 0 9px #3b3e44; }
+  .platter .vinyl { width: 100%; transform: rotate(-20deg); }
+  .platter .vinyl-label span { font-family: var(--display); font-weight: 600; font-size: 17px; color: #fff; transform: translateY(-38px); position: relative; z-index: 1; }
+  .arm { position: absolute; right: 150px; top: 42px; width: 78px; height: 78px; border-radius: 50%;
+    background: radial-gradient(circle, #d7d9dc 0 30%, #8e939b 32%); }
+  .arm::before { content: ''; position: absolute; left: 34px; top: 39px; width: 10px; height: 380px;
+    background: linear-gradient(90deg, #c9ccd1, #9ea3aa); border-radius: 5px; transform-origin: top center; transform: rotate(22deg); }
+  .arm::after { content: ''; position: absolute; left: -118px; top: 380px; width: 34px; height: 56px;
+    background: #2b2d31; border-radius: 4px; transform: rotate(22deg); }
+
+  .covers { position: absolute; left: 790px; top: 560px; }
+  .covers .cover { position: absolute; width: 230px; font-size: 22px; }
+  .covers .c1 { left: 0; top: 0; transform: rotate(-8deg); }
+  .covers .c2 { left: 170px; top: 20px; transform: rotate(4deg); }
+  .covers .sticker { position: absolute; left: 330px; top: -18px; width: 104px; height: 104px; font-size: 22px; z-index: 3; }
+  .covers .sticker small { font-size: 14px; }
+
+  .console {
+    position: absolute; left: 800px; top: 70px; width: 500px; z-index: 4;
+    background: var(--console); color: var(--console-ink); border-radius: 18px;
+    font-family: var(--mono); font-size: 19px; padding: 18px 0;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,.6);
+  }
+  .console .row { display: grid; grid-template-columns: 82px 1fr 52px; gap: 12px; padding: 7px 24px; align-items: center; }
+  .console .s { font-size: 16px; }
+  .console pre { margin: 8px 24px 4px; padding: 14px 16px; background: #0f1013; border-radius: 10px; font-size: 16px; line-height: 1.5; }
+  .k { color: #6cb6ff; } .v { color: #57d38c; } .n { color: #e3b341; }
+
+  .url { position: absolute; left: 96px; bottom: 60px; font-family: var(--mono); font-size: 22px; color: var(--ink-2); }
+</style>
+</head>
+<body>
+  <div class="copy">
+    <div class="brand"><i></i>Пластинка</div>
+    <h1>Магазин винила от витрины до базы</h1>
+    <p class="sub">Full-stack проект: каталог, корзина, заказы, REST API и админ-панель со статистикой</p>
+    <div class="stack">
+      <span class="b">Node.js</span><span class="b">Express</span><span class="b">SQLite</span>
+      <span>JavaScript</span><span>HTML/CSS</span><span>JWT</span>
+    </div>
+  </div>
+
+  <div class="deck">
+    <div class="platter">
+      <div class="vinyl" style="--label:#b3261e"><div class="vinyl-label"><span>Кино</span></div></div>
+    </div>
+    <div class="arm"></div>
+  </div>
+
+  <div class="console">
+    <div class="row"><span class="m m-get">GET</span><span>/api/records?genre=Джаз</span><span class="s s-ok">200</span></div>
+    <div class="row"><span class="m m-post">POST</span><span>/api/orders</span><span class="s s-ok">201</span></div>
+    <pre>{ <span class="k">"code"</span>: <span class="v">"PL-7K3QM"</span>,
+  <span class="k">"total"</span>: <span class="n">8400</span>,
+  <span class="k">"status"</span>: <span class="v">"new"</span> }</pre>
+  </div>
+
+  <div class="covers">
+    <div class="cover cover-p1 c1" style="--c:#b3261e;--fg:#f4f5f1"><span class="cover-artist">Кино</span><span class="cover-title">Группа крови</span></div>
+    <div class="cover cover-p0 c2" style="--c:#0d47a1;--fg:#f4f5f1"><span class="cover-artist">Miles Davis</span><span class="cover-title">Kind of Blue</span></div>
+    <span class="sticker">4 200<small>рублей</small></span>
+  </div>
+
+  <p class="url">plastinka-shop-iaroslav.onrender.com</p>
+</body>
+</html>

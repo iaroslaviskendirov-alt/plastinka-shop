@@ -3,6 +3,10 @@
 Full-stack проект для портфолио: витрина, REST API, база данных и админ-панель.
 Без фронтенд-фреймворков и ORM — чтобы было видно, как всё устроено изнутри.
 
+**Живая версия:** https://plastinka-shop-iaroslav.onrender.com — админка: https://plastinka-shop-iaroslav.onrender.com/admin (`admin` / `admin123`), API: https://plastinka-shop-iaroslav.onrender.com/docs
+
+> Хостинг бесплатный: если сайт долго не открывали, первый запуск занимает до минуты. База сбрасывается к демо-данным при перезапуске.
+
 ## Что умеет
 
 **Витрина** (`/`)

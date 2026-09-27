@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>API — Пластинка</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Onest:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/base.css">
+  <style>
+    .docs { max-width: 920px; margin: 0 auto; padding: 40px var(--gutter) 120px; }
+    .docs > a { font-weight: 500; }
+    .docs h1 { font-size: clamp(30px, 4vw, 48px); margin: 18px 0 14px; }
+    .docs > p { color: var(--ink-2); max-width: 64ch; }
+    .docs h2 { font-family: var(--body); font-size: 22px; font-weight: 700; margin: 44px 0 14px; }
+    .ep { background: var(--card); border-radius: var(--r-md); margin-bottom: 12px; overflow: hidden; }
+    .ep-head { display: grid; grid-template-columns: 70px 1fr auto; gap: 14px; align-items: center; padding: 14px 18px; }
+    .ep-method { font-family: var(--mono); font-weight: 600; font-size: 14px; }
+    .ep-path { font-family: var(--mono); font-size: 15px; overflow-wrap: anywhere; }
+    .ep-desc { padding: 0 18px 14px 102px; color: var(--ink-2); font-size: 15px; }
+    .ep pre {
+      margin: 0; padding: 14px 18px; background: var(--console); color: var(--console-ink);
+      font-family: var(--mono); font-size: 12.5px; max-height: 320px; overflow: auto; white-space: pre-wrap; word-break: break-word;
+    }
+    .m-get { color: #1d6fc2; } .m-post { color: var(--ok); } .m-patch, .m-put { color: #9a6700; } .m-delete { color: var(--bad); }
+    .lock { font-size: 13px; color: var(--ink-2); }
+    @media (max-width: 600px) {
+      .ep-head { grid-template-columns: 56px 1fr; }
+      .ep-head .btn, .ep-head .lock { grid-column: 1 / -1; justify-self: start; }
+      .ep-desc { padding-left: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="docs">
+    <a href="/">Вернуться в магазин</a>
+    <h1>REST API</h1>
+    <p>Все ответы в JSON. Ошибки приходят в формате <code>{ "error": "...", "fields": {...} }</code>, где <code>fields</code> — ошибки по полям формы. Открытые GET-запросы можно выполнить прямо здесь.</p>
+
+    <h2>Магазин</h2>
+    <div id="public"></div>
+
+    <h2>Админка, нужен токен</h2>
+    <p class="lock" style="margin-bottom:14px">Токен выдаёт <code>POST /api/auth/login</code>, передаётся в заголовке <code>Authorization: Bearer &lt;token&gt;</code>. Живёт 8 часов.</p>
+    <div id="admin"></div>
+  </main>
+
+  <script type="module">
+    import { api, escapeHtml as esc, mountApiConsole } from '/js/api.js';
+    mountApiConsole();
+
+    const publicEps = [
+      ['GET', '/health', 'Состояние сервера: аптайм, версия Node, число пластинок в базе.', true],
+      ['GET', '/records?genre=Джаз&sort=price_asc', 'Каталог. Параметры: genre, q (поиск по названию и исполнителю), sort (new, price_asc, price_desc, year), in_stock=1.', true],
+      ['GET', '/records/9', 'Одна пластинка по id.', true],
+      ['GET', '/genres', 'Жанры с количеством пластинок.', true],
+      ['POST', '/orders', 'Оформить заказ. Тело: { customer: { name, phone, email, address }, items: [{ id, qty }] }. Цены и остатки проверяются на сервере в транзакции; при нехватке — 409.'],
+      ['GET', '/orders/PL-XXXXX', 'Статус заказа по номеру. Персональные данные не возвращаются.'],
+      ['POST', '/auth/login', 'Вход: { username, password } → { token }. Не больше 5 попыток в минуту с одного IP.'],
+    ];
+    const adminEps = [
+      ['GET', '/admin/stats', 'Выручка, средний чек, выручка по дням за 14 дней, лидеры продаж, остатки.'],
+      ['GET', '/admin/orders?status=new', 'Список заказов с позициями.'],
+      ['PATCH', '/admin/orders/:id', 'Сменить статус: { status }. При отмене пластинки возвращаются на склад.'],
+      ['POST', '/admin/records', 'Добавить пластинку.'],
+      ['PUT', '/admin/records/:id', 'Изменить пластинку (можно передать только часть полей).'],
+      ['DELETE', '/admin/records/:id', 'Удалить пластинку. В старых заказах позиция сохраняется.'],
+      ['GET', '/admin/logs', 'Последние 200 запросов к API.'],
+    ];
+
+    const render = (el, eps) => {
+      el.innerHTML = eps.map(([m, p, d, tryable], i) => `
+        <article class="ep">
+          <div class="ep-head">
+            <span class="ep-method m-${m.toLowerCase()}">${m}</span>
+            <span class="ep-path">/api${esc(p)}</span>
+            ${tryable ? `<button class="btn btn-ghost btn-sm" data-try="${esc(p)}">Выполнить</button>` : ''}
+          </div>
+          <p class="ep-desc">${esc(d)}</p>
+        </article>`).join('');
+    };
+    render(document.querySelector('#public'), publicEps);
+    render(document.querySelector('#admin'), adminEps);
+
+    document.addEventListener('click', async e => {
+      const btn = e.target.closest('[data-try]');
+      if (!btn) return;
+      const card = btn.closest('.ep');
+      card.querySelector('pre')?.remove();
+      const pre = document.createElement('pre');
+      pre.textContent = 'Выполняем…';
+      card.append(pre);
+      try {
+        pre.textContent = JSON.stringify(await api(btn.dataset.try), null, 2);
+      } catch (err) {
+        pre.textContent = `${err.status}: ${err.message}`;
+      }
+    });
+  </script>
+</body>
+</html>

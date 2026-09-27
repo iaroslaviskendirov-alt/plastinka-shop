@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Пластинка — магазин винила</title>
+  <meta name="description" content="Виниловые пластинки с проверенным состоянием. Учебный full-stack проект: Express, SQLite, vanilla JS.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='15' fill='%231a1c20'/><circle cx='16' cy='16' r='6' fill='%23ff8a1f'/><circle cx='16' cy='16' r='1.5' fill='%231a1c20'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Onest:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/shop.css">
+</head>
+<body>
+  <a class="skip" href="#catalog">Перейти к каталогу</a>
+
+  <header class="topbar">
+    <a class="logo" href="/"><span class="logo-disc" aria-hidden="true"></span>Пластинка</a>
+    <nav class="topnav" aria-label="Основное меню">
+      <a href="#catalog">Каталог</a>
+      <a href="#track">Где мой заказ</a>
+      <a href="#stack">Как это устроено</a>
+    </nav>
+    <button class="cart-btn" id="cartOpen" aria-label="Открыть корзину">
+      Корзина <span class="cart-badge" id="cartCount">0</span>
+    </button>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="hero-copy">
+        <h1 id="heroTitle">Пластинки, которые мы переслушали перед продажей</h1>
+        <p class="lead">Каждый диск проверяем на проигрывателе и честно пишем состояние. Отправляем в жёстком конверте по всей России.</p>
+        <div class="hero-pick" id="heroPick" aria-live="polite">
+          <p class="hero-pick-label">Сейчас на проигрывателе</p>
+          <p class="hero-pick-title">Загружаем…</p>
+        </div>
+      </div>
+      <div class="deck" aria-hidden="true">
+        <div class="platter">
+          <div class="vinyl vinyl-hero" id="heroVinyl">
+            <div class="vinyl-label"><span></span></div>
+          </div>
+        </div>
+        <div class="tonearm"></div>
+      </div>
+    </section>
+
+    <section class="catalog" id="catalog" aria-labelledby="catalogTitle">
+      <div class="section-head">
+        <h2 id="catalogTitle">Каталог</h2>
+        <p class="result-count" id="resultCount" aria-live="polite"></p>
+      </div>
+
+      <form class="filters" id="filters" role="search">
+        <div class="genres" id="genres" role="group" aria-label="Жанр"></div>
+        <div class="filters-row">
+          <label class="field field-search">
+            <span class="visually-hidden">Поиск</span>
+            <input type="search" name="q" placeholder="Исполнитель или альбом" autocomplete="off">
+          </label>
+          <label class="field">
+            <span class="visually-hidden">Сортировка</span>
+            <select name="sort">
+              <option value="new">Сначала новые поступления</option>
+              <option value="price_asc">Сначала дешевле</option>
+              <option value="price_desc">Сначала дороже</option>
+              <option value="year">По году выпуска</option>
+            </select>
+          </label>
+          <label class="check">
+            <input type="checkbox" name="in_stock" value="1"> Только в наличии
+          </label>
+        </div>
+      </form>
+
+      <ul class="grid" id="grid"></ul>
+    </section>
+
+    <section class="track" id="track" aria-labelledby="trackTitle">
+      <div class="track-inner">
+        <h2 id="trackTitle">Где мой заказ</h2>
+        <p>Введите номер из письма — он начинается с PL.</p>
+        <form class="track-form" id="trackForm">
+          <label class="field">
+            <span class="visually-hidden">Номер заказа</span>
+            <input name="code" placeholder="PL-XXXXX" required maxlength="8" autocomplete="off">
+          </label>
+          <button class="btn btn-dark">Проверить статус</button>
+        </form>
+        <div id="trackResult" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="stack" id="stack" aria-labelledby="stackTitle">
+      <h2 id="stackTitle">Как это устроено</h2>
+      <p class="stack-lead">Это портфолио-проект. Витрина, сервер и база — три отдельных слоя, которые общаются через REST API. Нажмите «API» в правом нижнем углу: там видно каждый запрос этой страницы и ответ сервера.</p>
+      <div class="layers">
+        <article class="layer">
+          <h3>Фронтенд</h3>
+          <p>HTML, CSS и JavaScript без фреймворков. ES-модули, корзина в localStorage, обложки и пластинки нарисованы на CSS.</p>
+          <p class="layer-files">public/index.html, public/js/shop.js</p>
+        </article>
+        <article class="layer">
+          <h3>Бэкенд</h3>
+          <p>Node.js и Express. Валидация, транзакции при оформлении заказа, JWT-авторизация админки, лимит попыток входа.</p>
+          <p class="layer-files">server/routes/public.js, server/routes/admin.js</p>
+        </article>
+        <article class="layer">
+          <h3>База данных</h3>
+          <p>SQLite через встроенный модуль node:sqlite. Четыре таблицы, внешние ключи, агрегаты и рекурсивный CTE для графика выручки.</p>
+          <p class="layer-files">server/db.js</p>
+        </article>
+      </div>
+      <div class="stack-links">
+        <a class="btn btn-dark" href="/admin">Открыть админ-панель</a>
+        <a class="btn btn-ghost" href="/docs">Документация API</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Пластинка — учебный full-stack проект. Заказы не доставляются, но сохраняются в базе по-настоящему.</p>
+  </footer>
+
+  <dialog class="modal" id="recordModal" aria-labelledby="recordModalTitle"></dialog>
+
+  <dialog class="drawer" id="cartDrawer" aria-labelledby="cartTitle">
+    <div class="drawer-inner">
+      <header class="drawer-head">
+        <h2 id="cartTitle">Корзина</h2>
+        <button class="icon-btn" data-close aria-label="Закрыть корзину">✕</button>
+      </header>
+      <div id="cartBody"></div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="/js/shop.js"></script>
+</body>
+</html>

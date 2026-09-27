@@ -1,0 +1,16 @@
+{
+  "name": "plastinka-shop",
+  "version": "1.0.0",
+  "description": "Магазин виниловых пластинок: REST API на Express + SQLite, витрина и админ-панель на vanilla JS",
+  "type": "module",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning server/index.js",
+    "dev": "node --watch --disable-warning=ExperimentalWarning server/index.js",
+    "reset-db": "node --disable-warning=ExperimentalWarning server/reset.js"
+  },
+  "engines": { "node": ">=22.13" },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

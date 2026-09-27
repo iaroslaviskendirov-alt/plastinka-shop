@@ -1,0 +1,16 @@
+# Деплой на Render.com (бесплатный тариф).
+# База SQLite на бесплатном тарифе не сохраняется между перезапусками:
+# при каждом старте сервер создаёт её заново с демо-данными — для демо это даже удобно.
+services:
+  - type: web
+    name: plastinka-shop
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: JWT_SECRET
+        generateValue: true
